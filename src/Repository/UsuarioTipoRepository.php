@@ -32,8 +32,19 @@ class UsuarioTipoRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+    public function findAllSinsysadmin($empresa)
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.empresa is null or u.empresa = :val')
+            ->setParameter('val',$empresa)
+            ->andWhere("u.nombreInterno != 'sys_admin'")
+            ->orderBy('u.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
     // /**
-    //  * @return UsuarioTipo[] Returns an array of UsuarioTipo objects
+    //  * @return UsuarioTipo[] Returns an aArray of UsuarioTipo objects
     //  */
     /*
     public function findByExampleField($value)

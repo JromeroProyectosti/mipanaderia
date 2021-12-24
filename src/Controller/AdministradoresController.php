@@ -48,7 +48,7 @@ class AdministradoresController extends AbstractController
             
         }
         $pagina=$moduloPerRepository->findOneByName('administradores',$user->getEmpresaActual());
-        $query=$usuarioRepository->findBy(['usuarioTipo'=>8,'estado'=>$modo]);
+        $query=$usuarioRepository->findBy(['usuarioTipo'=>2,'estado'=>$modo]);
         $usuarios=$paginator->paginate(
             $query, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
@@ -83,7 +83,7 @@ class AdministradoresController extends AbstractController
         $cuentas=$empresa->getCuentas();
         
         
-        $usuario->setUsuarioTipo($usuarioTipoRepository->find(8));
+        $usuario->setUsuarioTipo($usuarioTipoRepository->find(2));
         $usuario->setFechaActivacion(new \DateTime(date('Y-m-d H:i:s')));
         
         $form = $this->createForm(UsuarioType::class, $usuario);

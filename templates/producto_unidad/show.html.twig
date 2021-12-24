@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ProductoUnidad{% endblock %}
+
+{% block body %}
+    <h1>ProductoUnidad</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ producto_unidad.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ producto_unidad.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Cod</th>
+                <td>{{ producto_unidad.cod }}</td>
+            </tr>
+            <tr>
+                <th>Estado</th>
+                <td>{{ producto_unidad.estado ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Orden</th>
+                <td>{{ producto_unidad.orden }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('producto_unidad_index') }}">back to list</a>
+
+    <a href="{{ path('producto_unidad_edit', {'id': producto_unidad.id}) }}">edit</a>
+
+    {{ include('producto_unidad/_delete_form.html.twig') }}
+{% endblock %}

@@ -266,6 +266,11 @@ class Usuario implements UserInterface
      */
     private $lotes = [];
 
+    /**
+     * @ORM\OneToMany(targetEntity=Movimiento::class, mappedBy="usuarioIngreso")
+     */
+    private $movimientos;
+
 
     
     public function __construct()
@@ -276,6 +281,7 @@ class Usuario implements UserInterface
         $this->importacions = new ArrayCollection();
         $this->usuarioContratos = new ArrayCollection();
         $this->usuarioNoDisponibles = new ArrayCollection();
+        $this->movimientos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -993,6 +999,36 @@ class Usuario implements UserInterface
     public function setLotes(?array $lotes): self
     {
         $this->lotes = $lotes;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Movimiento[]
+     */
+    public function getMovimientos(): Collection
+    {
+        return $this->movimientos;
+    }
+
+    public function addMovimiento(Movimiento $movimiento): self
+    {
+        if (!$this->movimientos->contains($movimiento)) {
+            $this->movimientos[] = $movimiento;
+            $movimiento->setUsuarioIngreso($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovimiento(Movimiento $movimiento): self
+    {
+        if ($this->movimientos->removeElement($movimiento)) {
+            // set the owning side to null (unless already changed)
+            if ($movimiento->getUsuarioIngreso() === $this) {
+                $movimiento->setUsuarioIngreso(null);
+            }
+        }
 
         return $this;
     }

@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{pagina|default('')}}{% endblock %}
+
+{% block body %}
+
+      {{ include('producto/_form.html.twig') }}
+
+<script>
+      $(".pCodigo").focus();
+      $('.pCodigo').keypress(function(event){
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if(keycode == '13'){
+        $('.pNombre').focus();
+    }
+});
+</script>
+{% endblock %}

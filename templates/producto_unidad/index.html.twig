@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ProductoUnidad index{% endblock %}
+
+{% block body %}
+    <button  class="btn btn-primary puCrear"><i class="fas fa-refresh"></i>Crear</button>
+    <div class="card">
+
+        <div class="card-body">
+            {# display navigation #}
+            <div class="navigation">
+                {{ knp_pagination_render(producto_unidades,'@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig',{},{
+                'position': 'centered',
+                'rounded': true,
+                }) }}
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Cod</th>
+                        <th>Estado</th>
+                        <th>Orden</th>
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for producto_unidad in producto_unidades %}
+                    <tr>
+                        <td>{{ producto_unidad.id }}</td>
+                        <td>{{ producto_unidad.nombre }}</td>
+                        <td>{{ producto_unidad.cod }}</td>
+                        <td>{{ producto_unidad.estado ? 'Yes' : 'No' }}</td>
+                        <td>{{ producto_unidad.orden }}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                            <button type="button" onclick="javascript:puModificar('{{ path('producto_unidad_edit', {'id': producto_unidad.id})}}')" class="btn btn-success"><i class="fas fa-edit"></i></button>
+                            {{ include('producto_unidad/_delete_form.html.twig',{'producto_unidad_id':producto_unidad.id}) }}
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6">No hay {{pagina|default("Items")}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        <div class="navigation">
+                {{ knp_pagination_render(producto_unidades,'@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig',{},{
+                'position': 'centered',
+                'rounded': true,
+                }) }}
+            </div>
+        </div>
+    </div>
+
+   
+<script>
+
+
+    $(".puCrear").click(function(){
+
+        $.ajax({
+            url:"{{path('producto_unidad_new')}}",
+            type: "post",
+            dataType: "html",
+            cache: false,
+            contentType: false,
+            processData: false,
+            async: true,
+            success:function(data){ 
+                $(".modal-content").html(data);
+                $('#controlesModal').modal();
+
+            }
+        });
+    });
+
+    function puModificar(ruta){
+        $.ajax({
+            url:ruta,
+            type: "get",
+            dataType: "html",
+            cache: false,
+            contentType: false,
+            processData: false,
+            async: true,
+            success:function(data){ 
+                $(".modal-content").html(data);
+                $('#controlesModal').modal();
+
+            }
+        });
+    }
+
+    
+</script>
+{% endblock %}

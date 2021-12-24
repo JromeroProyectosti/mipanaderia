@@ -53,6 +53,27 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
         ;
     }
 
+    public function findAllSinsysadmin($empresa=null,$filtro=array()){
+        $query=$this->createQueryBuilder('u')
+            ->join('u.usuarioCuentas','uc')
+            ->join('uc.cuenta','c')
+            ->join('u.usuarioTipo','ut')
+            ->andWhere('c.empresa = :val')
+            ->setParameter('val',$empresa)
+            ->andWhere("ut.nombreInterno != 'sys_admin'");
+
+        foreach($filtro as $index=>$nombre){
+            $query->andWhere('u.'.$index.'='.$nombre);
+        }
+
+        
+        $query->orderBy('u.username', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+        return $query;
+
+    }
     // /**
     //  * @return Usuario[] Returns an array of Usuario objects
     //  */

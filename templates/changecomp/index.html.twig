@@ -1,6 +1,6 @@
 
 
-    {% if sesion.getSesion.usuarioTipo.id==8  %}
+    {% if sesion.getSesion.usuarioTipo.id==1  %}
         <form action="{{path('changecomp_new')}}" method="post" id="frmChange">
             <select  class="form-control changecomp" name="company" id="company">
                 {% for empresa in empresas %}

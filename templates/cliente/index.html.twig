@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{pagina|default('Clientes')}}{% endblock %}
+
+{% block body %}
+<div class="card">
+    <div class="card-header">
+        Listado
+    </div>
+    <div class="card-body">
+        {% if modo == 1 %}
+        <a href="{{path('cliente_new')}}" class="btn btn-primary" id="btn-agregar"><i class="fas fa-plus"></i></a>
+            <a href="{{path('cliente_index',{'modo':'trash'})}}" class="btn btn-danger"><i class="fas fa-trash"></i> Clientes Eliminados</a>
+        {% else %}
+            <a href="{{path('cliente_index')}}" class="btn btn-success"><i class="fas fa-trash-restore"></i> Clientes Activos</a>
+        {% endif %}
+
+        <table class="table">
+            <thead>
+                <tr>
+            
+                    <th>Nombre</th>
+                    <th>Rut</th>
+                    <th>Correo</th>
+                    <th>Telefono</th>
+                    <th>Celular</th>
+                    <th>Direccion</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for cliente in clientes %}
+                <tr>
+                
+                    <td>{{ cliente.nombre }}</td>
+                    <td>{{ cliente.rut }}</td>
+                    <td>{{ cliente.correo }}</td>
+                    <td>{{ cliente.telefono }}</td>
+                    <td>{{ cliente.celular }}</td>
+                    <td>{{ cliente.direccion }}</td>
+            
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                            {% if modo == 1 %}
+    
+                            {{ include('cliente/_delete_form.html.twig',{'id_cliente':cliente.id}) }}
+                            <a href="{{ path('cliente_edit', {'id': cliente.id}) }}" class="btn btn-secondary"><spam class='fas fa-edit'></spam></a>
+                            {% else %}
+                            <a href="{{path('cliente_restore',{'id':cliente.id})}}" class="btn btn-success"><spam class='fas fa-trash-restore'></spam></a>
+
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <div class="navigation">
+            {{ knp_pagination_render(clientes,'@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig',{},{
+            'position': 'centered',
+            'rounded': true,
+            }) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

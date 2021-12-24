@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ClienteProveedor index{% endblock %}
+
+{% block body %}
+    
+    <div class="card">
+    
+        <div class="card-body">
+            {% if modo == 1 %}
+            <a href="{{path('cliente_proveedor_new')}}" class="btn btn-primary" id="btn-agregar"><i class="fas fa-plus"></i></a>
+                <a href="{{path('cliente_proveedor_index',{'modo':'trash'})}}" class="btn btn-danger"><i class="fas fa-trash"></i> {{pagina|default('Item')}} Eliminados</a>
+            {% else %}
+                <a href="{{path('cliente_proveedor_index')}}" class="btn btn-success"><i class="fas fa-trash-restore"></i>  {{pagina|default('Item')}} Activos</a>
+            {% endif %}
+            <div class="navigation">
+                {{ knp_pagination_render(cliente_proveedors,'@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig',{},{
+                'position': 'centered',
+                'rounded': true,
+                }) }}
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Rut</th>
+                        <th>Nombre</th>
+                        <th>Contacto</th>
+                        <th>Telefono</th>
+                        <th>Correo</th>
+                        <th>Tipo Entidad</th>
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for cliente_proveedor in cliente_proveedors %}
+                    <tr>
+                        <td>{{ cliente_proveedor.id }}</td>
+                        <td>{{ cliente_proveedor.rut }}</td>
+                        <td>{{ cliente_proveedor.nombre }}</td>
+                        <td>{{ cliente_proveedor.contacto }}</td>
+                        <td>{{ cliente_proveedor.telefono }}</td>
+                        <td>{{ cliente_proveedor.correo }}</td>
+                        <td>{{ cliente_proveedor.tipoClienteProveedor }}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                                <a href="{{ path('cliente_proveedor_edit', {'id': cliente_proveedor.id}) }}" class="btn btn-warning">edit</a>
+                                {{ include('cliente_proveedor/_delete_form.html.twig',{'cliente_proveedor_id':cliente_proveedor.id}) }}
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7">No hay {{pagina|default("Items")}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="navigation">
+                {{ knp_pagination_render(cliente_proveedors,'@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig',{},{
+                'position': 'centered',
+                'rounded': true,
+                }) }}
+            </div>
+        </div>
+    </div>
+
+   
+{% endblock %}

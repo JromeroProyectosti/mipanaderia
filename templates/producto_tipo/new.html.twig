@@ -1,0 +1,13 @@
+{% block title %}New ProductoTipo{% endblock %}
+
+{% block body %}
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Crear {{pagina|default("items")}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {{ include('producto_tipo/_form.html.twig',{'action':path('producto_tipo_new')}) }}
+
+   
+{% endblock %}

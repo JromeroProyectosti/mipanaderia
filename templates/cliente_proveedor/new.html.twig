@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{pagina|default('Entidad')}}{% endblock %}
+
+{% block body %}
+    
+    {{ include('cliente_proveedor/_form.html.twig') }}
+
+{% endblock %}

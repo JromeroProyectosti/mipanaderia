@@ -22,7 +22,7 @@
                         <td>{{ usuario_tipo.nombre }}</td>
                         <td>{{ usuario_tipo.fijar }}</td>
                         <td>
-                            {% if sesion.getSesion.usuarioTipo.id==8 or  usuario_tipo.fijar == 0 %}
+                            {% if sesion.getSesion.usuarioTipo.id==1 or  usuario_tipo.fijar == 0 %}
                             <a href="{{ path('usuario_tipo_edit', {'id': usuario_tipo.id}) }}" class="btn btn-success"><i class="fas fa-edit"></i></a>
                             {% endif %}
 

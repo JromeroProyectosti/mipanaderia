@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{pagina|default(' Pagina')}}{% endblock %}
+
+{% block body %}
+
+    <div class="card">
+        <div class="card-header">
+            <form action="" method="get">
+                <div class="row">
+                    <div class="col-sm-12 col-md-2">
+                        <select name="bCuenta" class="form-control">
+                            <option value="0">Todos</option>
+                            {% for cuenta in cuentas %}
+                                <option value="{{cuenta.id}}"
+                                {% if bCuenta==cuenta.id %}
+                                    selected
+                                {% endif %}
+                                >{{cuenta.nombre}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-12 col-md-2">
+                        <input type="text" class="form-control bFolio" name="bFolio"  placeholder="Folio" value="{{bFolio}}">
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <input type="text" class="form-control bProveedor" name="bProveedor" placeholder="Proveedor" value="">
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <input type="text" class="form-control bFecha" name="bFecha" id="bFecha"  value="">
+                    </div>
+                    <div class="col-sm-12 col-md-1">
+                        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                    </div>
+                   
+    
+                </div>
+                </form>
+        </div>
+        <div class="card-body">
+            {% if modo == 1 %}
+        <a href="{{path('ingreso_new')}}" class="btn btn-primary" id="btn-agregar"><i class="fas fa-plus"></i></a>
+            <a href="{{path('ingreso_index',{'modo':'trash'})}}" class="btn btn-danger"><i class="fas fa-trash"></i> {{pagina|default('Item')}} Eliminados</a>
+        {% else %}
+            <a href="{{path('ingreso_index')}}" class="btn btn-success"><i class="fas fa-trash-restore"></i>  {{pagina|default('Item')}} Activos</a>
+        {% endif %}
+            {# display navigation #}
+            <div class="navigation">
+                {{ knp_pagination_render(movimientos,'@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig',{},{
+                'position': 'centered',
+                'rounded': true,
+                }) }}
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        
+                        <th>{{ knp_pagination_sortable(movimientos, 'Folio', 'folio') }} {% if movimientos.isSorted('folio') %} <i class="fas fa-sort"></i>{% endif %}</th>
+                        <th>{{ knp_pagination_sortable(movimientos, 'Usuario', 'usuarioIngreso.nombre') }} {% if movimientos.isSorted('usuarioIngreso.nombre') %} <i class="fas fa-sort"></i>{% endif %}</th>
+                        <th>{{ knp_pagination_sortable(movimientos, 'Proveedor', 'clienteProveedor.nombre') }} {% if movimientos.isSorted('clienteProveedor.nombre') %} <i class="fas fa-sort"></i>{% endif %}</th>
+                        
+                        <th>{{ knp_pagination_sortable(movimientos, 'Fecha Ingreso', 'fechaIngreso') }} {% if movimientos.isSorted('fechaIngreso') %} <i class="fas fa-sort"></i>{% endif %}</th>
+                        <th>{{ knp_pagination_sortable(movimientos, 'Fecha Emision', 'fechaEmision') }} {% if movimientos.isSorted('fechaEmision') %} <i class="fas fa-sort"></i>{% endif %}</th>
+                        <th>{{ knp_pagination_sortable(movimientos, 'Valor Total', 'valorTotal') }} {% if movimientos.isSorted('valorTotal') %} <i class="fas fa-sort"></i>{% endif %}</th>
+                        
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for movimiento in movimientos %}
+                    <tr>
+                        
+                        <td>{{ movimiento.folio }}</td>
+                        <td>{{ movimiento.usuarioIngreso.nombre }}</td>
+                        <td>{{ movimiento.clienteProveedor.nombre}}</td>
+                        <td>{{ movimiento.fechaIngreso?movimiento.fechaIngreso|date('Y-m-d h:i'):''}}</td>
+                        <td>{{ movimiento.fechaEmision?movimiento.fechaEmision|date('Y-m-d'):'' }}</td>
+                        <td>{{ movimiento.valorTotal }}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+                            {% if movimiento.folio == 0 %}
+                                <a href="{{ path('ingreso_detail', {'id': movimiento.id}) }}" class="btn btn-success"><i class="fas fa-edit"></i></a>
+                            {% endif %}  
+                            {{ include('ingreso/_delete_form.html.twig',{'movimiento_id':movimiento.id}) }}
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6">No hay {{pagina|default("Items")}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {# display navigation #}
+            <div class="navigation">
+                {{ knp_pagination_render(movimientos,'@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig',{},{
+                'position': 'centered',
+                'rounded': true,
+                }) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -56,11 +56,11 @@ class Cuenta
     private $usuarioUsuariocategorias;
 
     /**
-     * @ORM\OneToMany(targetEntity=Importacion::class, mappedBy="cuenta")
+     * @ORM\OneToMany(targetEntity=Movimiento::class, mappedBy="cuenta")
      */
-    private $importacions;
+    private $movimientos;
 
-
+    
   
 
     public function __construct()
@@ -68,7 +68,8 @@ class Cuenta
         $this->usuarioCuentas = new ArrayCollection();
         $this->sucursals = new ArrayCollection();
         $this->usuarioUsuariocategorias = new ArrayCollection();
-        $this->importacions = new ArrayCollection();
+        $this->movimientos = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -222,29 +223,29 @@ class Cuenta
     }
 
     /**
-     * @return Collection|Importacion[]
+     * @return Collection|Movimiento[]
      */
-    public function getImportacions(): Collection
+    public function getMovimientos(): Collection
     {
-        return $this->importacions;
+        return $this->movimientos;
     }
 
-    public function addImportacion(Importacion $importacion): self
+    public function addMovimiento(Movimiento $movimiento): self
     {
-        if (!$this->importacions->contains($importacion)) {
-            $this->importacions[] = $importacion;
-            $importacion->setCuenta($this);
+        if (!$this->movimientos->contains($movimiento)) {
+            $this->movimientos[] = $movimiento;
+            $movimiento->setCuenta($this);
         }
 
         return $this;
     }
 
-    public function removeImportacion(Importacion $importacion): self
+    public function removeMovimiento(Movimiento $movimiento): self
     {
-        if ($this->importacions->removeElement($importacion)) {
+        if ($this->movimientos->removeElement($movimiento)) {
             // set the owning side to null (unless already changed)
-            if ($importacion->getCuenta() === $this) {
-                $importacion->setCuenta(null);
+            if ($movimiento->getCuenta() === $this) {
+                $movimiento->setCuenta(null);
             }
         }
 

@@ -1,0 +1,184 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{pagina|default('')}}{% endblock %}
+
+{% block body %}
+
+       	
+<div class="card">
+	<div class="card-header">
+	Datos Proveedor
+	</div>
+	<div class="card-body">
+
+		<section>	
+			
+			<div class="row">
+            <div class="col-sm-6 col-md-4">
+					<small class="text-muted">Cuenta *</small>
+					{{ movimiento.cuenta }}
+				</div>
+				<div class="col-sm-6 col-md-4">
+					<small class="text-muted">Proveedor *</small>
+					{{movimiento.clienteProveedor}}
+				</div>
+				<div class="col-sm-6 col-md-4">
+					<small class="text-muted">Fecha Emisión</small>
+					{{movimiento.fechaEmision?movimiento.fechaEmision|date('Y-m-d'):''}}
+				</div>
+				
+				
+	
+			</div>
+		</section>
+    </div>
+	
+</div>
+      	
+<div class="card">
+<div class="card-header">
+	Detalle Ingreso
+</div>
+	<div class="card-body">
+
+		<section>
+			<div class="row">
+				<div class="col-sm-6 col-md-4 border p-3">
+					<small class="text-muted">Código Producto</small>
+					<input type="text" class="form-control iCodigo">
+				</div>
+			</div>
+			<div class="panel">
+				{{ form_start(form) }}
+			<div class="row">
+            <div class="col-sm-6 col-md-4">
+					<small class="text-muted">Nombre Producto</small>
+					{{form_row(form.producto,{'label':false,'attr':{'class':'form-control iProducto'}})}}
+				</div>
+				
+				<div class="col-sm-6 col-md-2">
+					<small class="text-muted">Cantidad</small>
+					{{form_row(form.cantidad,{'label':false,'attr':{'class':'form-control iCantidad'}})}}
+				</div>
+				<div class="col-sm-6 col-md-2">
+					<small class="text-muted">Valor</small>
+					{{form_row(form.valor,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+				<div class="col-sm-6 col-md-2">
+					<small class="text-muted">Almacen</small>
+					{{form_row(form.almacen,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+				<div class="col-sm-6 col-md-2" style="vertical-align:bottom">
+							<button class="btn btn-primary">{{ button_label|default('Agregar') }}</button>
+				</div>
+			</div>
+		
+			{{ form_end(form) }}
+			</div>
+			
+
+			<table class="table">
+			<thead>
+				<tr>
+					<th>Código</th>
+					<th>Nombre</th>
+					<th>Cantidad</th>
+					<th>Valor</th>
+					<th>Total</th>
+					<th>Almacen</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% set total=0 %}
+			{%  for movimientoProducto in movimiento.movimientoProductos  %}
+				{% if movimientoProducto.estado %}
+				<tr>
+					<th>{{movimientoProducto.producto.codigo}}</th>
+					<th>{{movimientoProducto.producto.nombre}}</th>
+					<th>{{movimientoProducto.cantidad}}</th>
+					<th>{{movimientoProducto.valor}}</th>
+					<th>{{movimientoProducto.total}}</th>
+					<th>{{movimientoProducto.almacen}}</th>
+					<th>
+					{{ include('ingreso/_deleteProducto_form.html.twig',{'movimiento_producto_id':movimientoProducto.id}) }}
+					</th>
+				</tr>
+				{% set total=total + movimientoProducto.total %}
+				{% endif %}
+			{% endfor %}
+
+			</tbody>
+			</tfoot>
+				<tr>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th>{{ total}}</th>
+					<th></th>
+					<th>
+					
+					</th>
+				</tr>
+			</tfoot>
+			</table>
+		</section>
+	</div>
+	<div class="card-footer">
+		<div class="row">
+			<a href="{{path('ingreso_end',{'id':movimiento.id})}}" class="btn btn-primary">Finalizar</a> <a href="{{path('ingreso_end',{'id':movimiento.id,'next':'next'})}}" class="btn btn-success">Finalizar y Nuevo</a>
+		</div>	
+	</div>
+</div>
+
+<script>
+
+
+	$(".iProducto").prepend('<option > Seleccionar Producto </option>');
+	$('.iProducto option:first-child').attr("selected", "selected");
+	$(".iCodigo").focus();
+
+	$(".iCodigo").on('keypress',function(e) {
+
+
+		if(e.which == 13) {
+			 $.ajax({
+				url:"{{path('producto_codigo')}}",
+				type: "get",
+				data: "codigo="+$(".iCodigo").val(),
+				dataType: "html",
+				cache: false,
+				contentType: false,
+				processData: false,
+				async: true,
+				beforeSend: function(){
+                        $(".panel").html(' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>');
+                        
+                    },
+				success:function(data){ 
+					var obj = jQuery.parseJSON(data);
+					if(obj.status){
+						$.ajax({
+							url:"{{path('ingreso_panel',{'id':movimiento.id})}}",
+							type: "get",
+							data: "producto="+obj.producto.id,
+							dataType: "html",
+							cache: false,
+							contentType: false,
+							processData: false,
+							async: true,
+							success:function(data){
+								$(".panel").html(data);
+								$(".iCantidad").focus();
+
+							}
+
+						});
+					}
+				}
+			});
+		}
+	});
+</script>
+{% endblock %}

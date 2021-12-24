@@ -106,6 +106,26 @@ class Empresa
      */
     private $pais;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Producto::class, mappedBy="empresa", orphanRemoval=true)
+     */
+    private $productos;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Almacen::class, mappedBy="empresa")
+     */
+    private $almacenes;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ClienteProveedor::class, mappedBy="empresa", orphanRemoval=true)
+     */
+    private $clienteProveedors;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Folio::class, mappedBy="empresa")
+     */
+    private $folios;
+
 
     public function __construct()
     {
@@ -117,6 +137,10 @@ class Empresa
         $this->usuarioTipos = new ArrayCollection();
         $this->usuarioCategorias = new ArrayCollection();
         $this->pais = new ArrayCollection();
+        $this->productos = new ArrayCollection();
+        $this->almacenes = new ArrayCollection();
+        $this->clienteProveedors = new ArrayCollection();
+        $this->folios = new ArrayCollection();
     
     }
 
@@ -197,6 +221,17 @@ class Empresa
         return $this;
     }
 
+    public function getFechaVigencia(): ?\DateTimeInterface
+    {
+        return $this->fechaVigencia;
+    }
+
+    public function setFechaVigencia(?\DateTimeInterface $fechaVigencia): self
+    {
+        $this->fechaVigencia = $fechaVigencia;
+
+        return $this;
+    }
     
 
     /**
@@ -451,6 +486,126 @@ class Empresa
             // set the owning side to null (unless already changed)
             if ($pai->getEmpresa() === $this) {
                 $pai->setEmpresa(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Producto[]
+     */
+    public function getProductos(): Collection
+    {
+        return $this->productos;
+    }
+
+    public function addProducto(Producto $producto): self
+    {
+        if (!$this->productos->contains($producto)) {
+            $this->productos[] = $producto;
+            $producto->setEmpresa($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProducto(Producto $producto): self
+    {
+        if ($this->productos->removeElement($producto)) {
+            // set the owning side to null (unless already changed)
+            if ($producto->getEmpresa() === $this) {
+                $producto->setEmpresa(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Almacen[]
+     */
+    public function getAlmacenes(): Collection
+    {
+        return $this->almacenes;
+    }
+
+    public function addAlmacene(Almacen $almacene): self
+    {
+        if (!$this->almacenes->contains($almacene)) {
+            $this->almacenes[] = $almacene;
+            $almacene->setEmpresa($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAlmacene(Almacen $almacene): self
+    {
+        if ($this->almacenes->removeElement($almacene)) {
+            // set the owning side to null (unless already changed)
+            if ($almacene->getEmpresa() === $this) {
+                $almacene->setEmpresa(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ClienteProveedor[]
+     */
+    public function getClienteProveedors(): Collection
+    {
+        return $this->clienteProveedors;
+    }
+
+    public function addClienteProveedor(ClienteProveedor $clienteProveedor): self
+    {
+        if (!$this->clienteProveedors->contains($clienteProveedor)) {
+            $this->clienteProveedors[] = $clienteProveedor;
+            $clienteProveedor->setEmpresa($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClienteProveedor(ClienteProveedor $clienteProveedor): self
+    {
+        if ($this->clienteProveedors->removeElement($clienteProveedor)) {
+            // set the owning side to null (unless already changed)
+            if ($clienteProveedor->getEmpresa() === $this) {
+                $clienteProveedor->setEmpresa(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Folio[]
+     */
+    public function getFolios(): Collection
+    {
+        return $this->folios;
+    }
+
+    public function addFolio(Folio $folio): self
+    {
+        if (!$this->folios->contains($folio)) {
+            $this->folios[] = $folio;
+            $folio->setEmpresa($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFolio(Folio $folio): self
+    {
+        if ($this->folios->removeElement($folio)) {
+            // set the owning side to null (unless already changed)
+            if ($folio->getEmpresa() === $this) {
+                $folio->setEmpresa(null);
             }
         }
 

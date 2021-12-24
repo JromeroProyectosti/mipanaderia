@@ -169,7 +169,33 @@ scratch. This page gets rid of all links and provides the needed markup only.
   </aside>
 
         
-    	</div>
+</div>
+
+    <!-- Modal Controles-->
+<div class="modal fade" id="controlesModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    <!-- 
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>-->
+
+     
+    </div>
+  </div>
+</div>
+
         {% block javascripts %}
    
 
@@ -186,6 +212,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 };*/
                 {% if error_toast is defined %}
                     {{error_toast|raw}}
+                {% endif %}
+                {% if  app.request.query.get("toast") is defined %}
+                    Toast.fire({
+                      icon: '{{app.request.query.get("icon")|raw}}',
+                      title: '{{app.request.query.get("toast")|raw}}'
+                    })
+                    
                 {% endif %}
             });
 
@@ -243,198 +276,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
           
 
-                /*Ajax agregar rendicion*/
-
-                function vistaCrear(pag){
-                    $.ajax({
-                        url:pag,
-                        type: "post",
-                        dataType: "html",
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        async: true,
-                        beforeSend: function(){
-                            
-                            $('div.progress > div.progress-bar').css({ "width":"1%" }); 
-                            $("#spinnerModal").modal({
-                                show : true,
-                                backdrop : false
-                            });
-                        },
-                        xhr: function () {
-                            var xhr = new window.XMLHttpRequest();
-                            //Upload Progress
-                            xhr.upload.addEventListener("progress", function (evt) {
-                                if (evt.lengthComputable) {
-                                    var percentComplete = ((evt.loaded / evt.total) * 100)-10; 
-                                    $('div.progress > div.progress-bar').css({ "width": percentComplete + "%" }); 
-                                } 
-                            }, false);
-                            //Download progress
-                            xhr.addEventListener("progress", function (evt)
-                            {
-                                if (evt.lengthComputable)
-                                { 
-                                    var percentComplete = ((evt.loaded / evt.total) *100)-10;
-                                    $("div.progress > div.progress-bar").css({ "width": percentComplete + "%" }); 
-                                } 
-                            },
-                            false);
-                            return xhr;
-                        },
-                        complete: function(){
-                            
-                            $("div.progress > div.progress-bar").css({ "width":  "100%" }); 
-                            $("#spinnerModal").modal('hide');
-
-                        },
-                        success:function(data){
-                            $("#agregaModal .modal-content").html(data);
-
-                            $("#agregaModal").modal({
-                                show : true,
-                                backdrop : false
-                            });
-                        
-                            
-                        }
-
-                    });
-
-                }
-
-                function vistaEliminar(pag, id_form){
-                    var dataString = new FormData(document.getElementById("form"+id_form));
-                    $.ajax({
-                        url:pag,
-                        type: "DELETE",
-                        dataType: "html",
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        async: true,
-                        beforeSend: function(){
-                            
-                            $('div.progress > div.progress-bar').css({ "width":"1%" }); 
-                            $("#spinnerModal").modal({
-                                show : true,
-                                backdrop : false
-                            });
-                        },
-                        xhr: function () {
-                            var xhr = new window.XMLHttpRequest();
-                            //Upload Progress
-                            xhr.upload.addEventListener("progress", function (evt) {
-                                if (evt.lengthComputable) {
-                                    var percentComplete = ((evt.loaded / evt.total) * 100)-10; 
-                                    $('div.progress > div.progress-bar').css({ "width": percentComplete + "%" }); 
-                                } 
-                            }, false);
-                            //Download progress
-                            xhr.addEventListener("progress", function (evt)
-                            {
-                                if (evt.lengthComputable)
-                                { 
-                                    var percentComplete = ((evt.loaded / evt.total) *100)-10;
-                                    $("div.progress > div.progress-bar").css({ "width": percentComplete + "%" }); 
-                                } 
-                            },
-                            false);
-                            return xhr;
-                        },
-                        complete: function(){
-                            
-                            $("div.progress > div.progress-bar").css({ "width":  "100%" }); 
-                            $("#spinnerModal").modal('hide');
-
-                        },
-                        success:function(data){
-                            $("#agregaModal .modal-content").html(data);
-
-                            $("#agregaModal").modal({
-                                show : true,
-                                backdrop : false
-                            });
-                        
-                            
-                        }
-
-                    });
-
-                }
-                function grabarCrear(pag){
-                    var dataString = new FormData(document.getElementById("form"));
-                    $.ajax({
-                        url:pag,
-                        type: "post",
-                        dataType: "html",
-                        data: dataString,
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        async: true,
-                        beforeSend: function(){
-                            $("div.progress > div.progress-bar").addClass("progress-bar-animated");
-                            $("#spinnerModal").modal({
-                                show : true,
-                                backdrop : false
-                            });
-                            
-                        },
-                        xhr: function () {
-                            var xhr = new window.XMLHttpRequest();
-                            //Upload Progress
-                            xhr.upload.addEventListener("progress", function (evt) {
-                                if (evt.lengthComputable) {
-                                    var percentComplete = ((evt.loaded / evt.total) * 100)-10; 
-                                    $('div.progress > div.progress-bar').css({ "width": percentComplete + "%" }); 
-                                } 
-                            }, false);
-                            //Download progress
-                            xhr.addEventListener("progress", function (evt)
-                            {
-                                if (evt.lengthComputable)
-                                { 
-                                    var percentComplete = ((evt.loaded / evt.total) *100)-10;
-                                    $("div.progress > div.progress-bar").css({ "width": percentComplete + "%" }); 
-                                } 
-                            },
-                            false);
-                            return xhr;
-                        },
-                        complete: function(){
-                            $("#spinnerModal").modal('hide');
-                            
-                            $("div.progress > div.progress-bar").css({ "width":  "100%" }); 
-
-                        },
-                        success:function(data){
-                            $("#agregaModal .modal-content").html(data);
-
-                            $("#agregaModal").modal({
-                                show : true,
-                                backdrop : false
-                            });
-                            $("div.progress > div.progress-bar").removeClass("progress-bar-animated");
-                            $("div.progress > div.progress-bar").css({ "width": "0%" }); 
-                        }
-
-                    });
-
-                }
-
-                function cerrarCrear(pag){
-
-                    $("#agregaModal").modal('hide');
-                    pagination(pag);
-                    //window.location.reload();
-                    window.location.href=pag;
-                }
-
             
                 $('#usuario_whatsapp').inputmask({mask:'(+56 9) 9999 9999'});  //static mask
-                $('#usuario_telefono').inputmask({mask:'(+56 9) 9999 9999'}); 
                 
                 $('#agenda_telefonoCliente').inputmask({mask:'+56999999999'}); 
                 $('#agenda_telefonoRecadoCliente').inputmask({mask:"+56999999999"}); 
@@ -453,7 +296,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     }
                     }
                 });
-                $('#agenda_emailCliente').inputmask({
+               
+                
+                 $('.vCorreo').inputmask({
                     mask: "*{1,100}[.*{1,100}][.*{1,100}][.*{1,100}]@*{1,50}[.*{2,50}][.*{1,3}]",
                     greedy: false,
                     onBeforePaste: function (pastedValue, opts) {
@@ -467,11 +312,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     }
                     }
                 });
-                $("#usuario_rut").inputmask({
+                $(".vRut").inputmask({
                     mask: "9[9.999.999]-[9|K|k]",
                 });
+                $('.vTelefono').inputmask({mask:'(+56 9) 9999 9999'}); 
                 
-                
+               $('.date').daterangepicker({
+          
+                    "singleDatePicker": true,
+                    "locale": {
+                        "format": "YYYY-MM-DD",
+                        "applyLabel": "Apply",
+                        "cancelLabel": "Cancel",
+                    }
+                });
+
             </script>
         {% endblock %}
    <!-- Control Sidebar -->

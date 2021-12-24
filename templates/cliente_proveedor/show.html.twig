@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ClienteProveedor{% endblock %}
+
+{% block body %}
+    <h1>ClienteProveedor</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ cliente_proveedor.id }}</td>
+            </tr>
+            <tr>
+                <th>Rut</th>
+                <td>{{ cliente_proveedor.rut }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ cliente_proveedor.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Contacto</th>
+                <td>{{ cliente_proveedor.contacto }}</td>
+            </tr>
+            <tr>
+                <th>Telefono</th>
+                <td>{{ cliente_proveedor.telefono }}</td>
+            </tr>
+            <tr>
+                <th>Correo</th>
+                <td>{{ cliente_proveedor.correo }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('cliente_proveedor_index') }}">back to list</a>
+
+    <a href="{{ path('cliente_proveedor_edit', {'id': cliente_proveedor.id}) }}">edit</a>
+
+    {{ include('cliente_proveedor/_delete_form.html.twig') }}
+{% endblock %}

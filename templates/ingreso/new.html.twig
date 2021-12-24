@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{pagina|default('')}}{% endblock %}
+
+{% block body %}
+{{ form_start(form) }}
+
+       	
+<div class="card">
+	<div class="card-body">
+
+		<section>	
+			
+			<div class="row">
+            <div class="col-sm-6 col-md-4">
+					<small class="text-muted">Cuenta *</small>
+					{{form_row(form.cuenta,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+				<div class="col-sm-6 col-md-4">
+					<small class="text-muted">Proveedor *</small>
+					{{form_row(form.clienteProveedor,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+				<div class="col-sm-6 col-md-4">
+					<small class="text-muted">Fecha Emisión</small>
+					{{form_row(form.fechaEmision,{'label':false,'attr':{'class':'form-control date'}})}}
+				</div>
+				
+				
+	
+			</div>
+		</section>
+    </div>
+	<div class="card-footer">
+   
+        <button class="btn btn-primary">{{ button_label|default('Siguiente') }}</button>
+	</div>
+</div>
+
+{{ form_end(form) }}
+
+
+
+
+{% endblock %}

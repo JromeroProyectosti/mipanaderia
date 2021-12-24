@@ -99,8 +99,9 @@ class EmpresaController extends AbstractController
                 // This is needed to safely include the file name as part of the URL
                 // Enable "Intl" extension in "php.ini"
                 // https://stackoverflow.com/questions/33869521/how-can-i-enable-php-extension-intl
-                $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$logoFile->guessExtension();
+                //$safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
+                
+                $newFilename = $originalFilename.'-'.uniqid().'.'.$logoFile->guessExtension();
 
                 // Move the file to the directory where brochures are stored
                 try {
@@ -177,25 +178,25 @@ class EmpresaController extends AbstractController
 
 
             
-            // //creacion de perfiles standar
-            // $usuarioTipo=new UsuarioTipo();
-            // $usuarioTipo->setNombre('Administracion de empresa');
-            // $usuarioTipo->setNombreInterno('managed_company');
-            // $usuarioTipo->setFijar(1);
-            // $usuarioTipo->setMenuCabezera($menuCabezera);
-            // $usuarioTipo->setEmpresa($empresa);
+            //creacion de perfiles standar
+            $usuarioTipo=new UsuarioTipo();
+            $usuarioTipo->setNombre('Administracion de empresa');
+            $usuarioTipo->setNombreInterno('managed_company');
+            $usuarioTipo->setFijar(1);
+            //$usuarioTipo->setMenuCabezera($menuCabezera);
+            $usuarioTipo->setEmpresa($empresa);
 
-            // $entityManager->persist($usuarioTipo);
-            // $entityManager->flush();
+            $entityManager->persist($usuarioTipo);
+            $entityManager->flush();
 
-            // $usuarioTipo=new UsuarioTipo();
-            // $usuarioTipo->setNombre('Administracion de cuenta');
-            // $usuarioTipo->setNombreInterno('managed_account');
-            // $usuarioTipo->setFijar(1);
-            // $usuarioTipo->setEmpresa($empresa);
+            $usuarioTipo=new UsuarioTipo();
+            $usuarioTipo->setNombre('Administracion de cuenta');
+            $usuarioTipo->setNombreInterno('managed_account');
+            $usuarioTipo->setFijar(1);
+            $usuarioTipo->setEmpresa($empresa);
 
-            // $entityManager->persist($usuarioTipo);
-            // $entityManager->flush();
+            $entityManager->persist($usuarioTipo);
+            $entityManager->flush();
 
             // $usuarioTipo=new UsuarioTipo();
             // $usuarioTipo->setNombre('Jefe de proceso');
@@ -242,7 +243,7 @@ class EmpresaController extends AbstractController
             // $entityManager->persist($usuarioTipo);
             // $entityManager->flush();
 
-            $usuarioTipo_managedcompany=$usuarioTipoRepository->findOneBy(['nombreInterno'=>'sys_admin','empresa'=>null]);
+            $usuarioTipo_managedcompany=$usuarioTipoRepository->findOneBy(['nombreInterno'=>'sys_admin','empresa'=>$empresa]);
             $usuario=$usuarioRepository->find(1);
             $usuario->setUsuarioTipo($usuarioTipo_managedcompany);
             $entityManager->persist($usuario);
@@ -338,8 +339,8 @@ class EmpresaController extends AbstractController
                     // This is needed to safely include the file name as part of the URL
                     // Enable "Intl" extension in "php.ini"
                     // https://stackoverflow.com/questions/33869521/how-can-i-enable-php-extension-intl
-                    $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-                    $newFilename = $safeFilename.'-'.uniqid().'.'.$logoFile->guessExtension();
+                    //$safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
+                    $newFilename = $originalFilename.'-'.uniqid().'.'.$logoFile->guessExtension();
 
                     // Move the file to the directory where brochures are stored
                     try {
