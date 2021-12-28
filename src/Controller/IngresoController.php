@@ -12,6 +12,7 @@ use App\Entity\UsuarioTipo;
 use App\Form\MovimientoProductoType;
 use App\Repository\MovimientoRepository;
 use App\Form\MovimientoType;
+use App\Repository\CuentaRepository;
 use App\Repository\FolioRepository;
 use Doctrine\ORM\EntityRepository;
 use Exception;
@@ -31,25 +32,35 @@ class IngresoController extends AbstractController
     /**
      * @Route("/", name="ingreso_index")
      */
-    public function index(Request $request, MovimientoRepository $movimientoRepository, PaginatorInterface $paginator): Response
+    public function index(Request $request, 
+                        MovimientoRepository $movimientoRepository, 
+                        PaginatorInterface $paginator, 
+                        CuentaRepository $cuentaRepository): Response
     {
         $user=$this->getUser();
         
         $empresa=$this->getDoctrine()->getRepository(Empresa::class)->find($user->getEmpresaActual());
+        $movimientoTipo=$this->getDoctrine()->getRepository(MovimientoTipo::class)->findBy(['empresa'=>$empresa->getId(),'nombre'=>'Ingreso','estado'=>true]);
+        
+        $cuenta=null;
+        $folio=null;
+        $fecha=null;
+        $filtro=null;
+
         if(null !== $request->query->get('bFolio') && $request->query->get('bFolio')!=''){
             $folio=$request->query->get('bFolio');
             $otros=" c.folio= $folio";
 
             $dateInicio=date('Y-m-d',mktime(0,0,0,date('m'),date('d'),date('Y'))-60*60*24*30);
             $dateFin=date('Y-m-d');
-            $fecha=$otros. " and a.status in (7,14)";
+            
 
         }else{
             if(null !== $request->query->get('bProveedor') && $request->query->get('bProveedor')!=''){
-                $filtro=$request->query->get('bFiltro');
+                $filtro=$request->query->get('bProveedor');
             }
-            if(null !== $request->query->get('bCompania') && $request->query->get('bCompania')!=0){
-                $compania=$request->query->get('bCompania');
+            if(null !== $request->query->get('bCuenta') && $request->query->get('bCuenta')!=0){
+                $cuenta=$request->query->get('bCuenta');
             }
             if(null !== $request->query->get('bFecha')){
                 $aux_fecha=explode(" - ",$request->query->get('bFecha'));
@@ -59,16 +70,20 @@ class IngresoController extends AbstractController
                 $dateInicio=date('Y-m-d',mktime(0,0,0,date('m'),date('d'),date('Y'))-60*60*24*30);
                 $dateFin=date('Y-m-d');
             }
-            $fecha="c.fechaCreacion between '$dateInicio' and '$dateFin 23:59:59' and a.status in (7,14)" ;
+            $fecha="m.fechaIngreso between '$dateInicio' and '$dateFin 23:59:59'" ;
         }
 
 
-        $modo=1;
+        $modo=true;
         if($request->query->get('modo')=='trash'){
             $modo=0;
             
+
+
         }
-        $query=$movimientoRepository->findBy(['empresa'=>$empresa, 'estado'=>$modo]);
+
+        $query=$movimientoRepository->findByPers($empresa->getId(),null,$folio,$cuenta,$fecha,$filtro,$movimientoTipo[0]->getid(),$modo);
+        $cuentas=$cuentaRepository->findByPers($user->getId(),$user->getEmpresaActual());
 
         $movimientos=$paginator->paginate(
             $query, /* query NOT result */
@@ -82,6 +97,11 @@ class IngresoController extends AbstractController
             'pagina' => 'Ingreso',
             'movimientos'=>$movimientos,
             'modo'=>$modo,
+            'cuentas'=>$cuentas,
+            'bCuenta'=>$cuenta,
+            'bFolio'=>$folio,
+            'dateInicio'=>$dateInicio,
+            'dateFin'=>$dateFin,
         ]);
     }
 

@@ -8,6 +8,7 @@ use App\Entity\ProductoTipo;
 use App\Entity\ProductoUnidad;
 use App\Form\ProductoType;
 use App\Repository\ProductoRepository;
+use App\Repository\CuentaRepository;
 use Doctrine\ORM\EntityRepository;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
@@ -26,7 +27,7 @@ class ProductoController extends AbstractController
     /**
      * @Route("/", name="producto_index", methods={"GET"})
      */
-    public function index(ProductoRepository $productoRepository, PaginatorInterface $paginator,Request $request): Response
+    public function index(ProductoRepository $productoRepository, PaginatorInterface $paginator,Request $request, CuentaRepository $cuentaRepository): Response
     {
 
         $user=$this->getUser();
@@ -39,6 +40,7 @@ class ProductoController extends AbstractController
             
         }
         $query=$productoRepository->findBy(['empresa'=>$empresa, 'estado'=>$modo]);
+        $companias=$cuentaRepository->findByPers($user->getId(),$user->getEmpresaActual());
 
         $productos=$paginator->paginate(
             $query, /* query NOT result */

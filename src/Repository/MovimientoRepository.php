@@ -20,6 +20,53 @@ class MovimientoRepository extends ServiceEntityRepository
         parent::__construct($registry, Movimiento::class);
     }
 
+    /**
+     *
+     */
+    public function findByPers(int $empresa,
+                               int $usuario=null,
+                               int $folio=null,
+                               int $cuenta=null, 
+                               String $fecha=null, 
+                               String $clienteProvedor = null,
+                               int $tipoDocumento=null,
+                               bool $estado=true )
+    {
+        $query=$this->createQueryBuilder('m')
+        ->andWhere("m.empresa=".$empresa);
+
+        if($usuario!=null){
+            $query->andWhere("m.usuarioIngreso=".$usuario);
+        }
+        if($folio!=null){
+            $query->andWhere("m.folio=".$folio);
+        }
+        
+        if($estado){
+            $query->andWhere("m.estado=true");
+
+        }else{
+            $query->andWhere("m.estado=false");
+
+        }
+        
+        if($cuenta!=null){
+            $query->andWhere("m.cuenta=".$cuenta);
+        }
+        if($tipoDocumento!=null){
+            $query->andWhere("m.movimientoTipo=".$tipoDocumento);
+        }
+
+        if($clienteProvedor!=null){
+            $query->join("m.clienteProveedor",'cp');
+            $query->andWhere("cp.nombre like '%".$clienteProvedor."%' ");
+        }        
+
+
+        return $query->getQuery()
+        ->getResult()
+    ;
+    }
 
     // /**
     //  * @return Movimiento[] Returns an array of Movimiento objects
