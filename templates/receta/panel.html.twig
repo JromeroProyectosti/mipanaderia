@@ -1,0 +1,34 @@
+{% block body %}
+
+ 
+		{{ form_start(form) }}
+			<div class="row">
+               <div class="col-sm-6 col-md-4">
+					<small class="text-muted">Materia Prima</small>
+					{{form_row(form.producto,{'label':false,'attr':{'class':'form-control iProducto'}})}}
+				</div>
+                <div class="col-sm-6 col-md-1">
+					<small class="text-muted">Cantidad</small>
+					{{form_row(form.cantidad,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+                 <div class="col-sm-6 col-md-1">
+					<small class="text-muted">Total KG</small>
+					{{form_row(form.cantUnidad,{'label':false,'attr':{'class':'form-control iCantidad'}})}}
+				</div>
+                <div class="col-sm-6 col-md-2">
+					<small class="text-muted">Unidad</small>
+					{{form_row(form.unidad,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+            
+                <div class="col-sm-6 col-md-2">
+					<small class="text-muted">Producto Principal</small>
+					{{form_row(form.isPrincipal,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+                <div class="col-sm-6 col-md-2" style="vertical-align:bottom">
+					<button class="btn btn-primary">{{ button_label|default('Agregar') }}</button>
+				</div>
+            </div>
+            {{ form_end(form) }}
+
+
+{% endblock %}

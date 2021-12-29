@@ -48,7 +48,7 @@ class Producto
     private $nombre;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
     private $cantidadPaquete;
 
@@ -66,6 +66,11 @@ class Producto
      * @ORM\OneToMany(targetEntity=MovimientoProducto::class, mappedBy="producto")
      */
     private $movimientoProductos;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Receta::class, inversedBy="productos")
+     */
+    private $receta;
 
     public function __construct()
     {
@@ -205,5 +210,17 @@ class Producto
     function __toString()
     {
         return $this->nombre;
+    }
+
+    public function getReceta(): ?Receta
+    {
+        return $this->receta;
+    }
+
+    public function setReceta(?Receta $receta): self
+    {
+        $this->receta = $receta;
+
+        return $this;
     }
 }

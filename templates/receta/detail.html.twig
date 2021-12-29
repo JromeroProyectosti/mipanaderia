@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Receta{% endblock %}
+
+{% block body %}
+  
+
+<div class="card">
+	<div class="card-header">
+        Cabezera
+    </div>
+
+    <div class="card-body">
+
+		<section>	
+			
+			<div class="row">
+
+                <div class="col-sm-6 col-md-4">
+					<small class="text-muted">Nombre</small>
+					{{recetum.nombre}}
+				</div>
+                <div class="col-sm-6 col-md-2">
+					<small class="text-muted">Rendimiento</small>
+					{{recetum.rendimiento}}
+				</div>
+                <div class="col-sm-6 col-md-2">
+					<small class="text-muted">Total</small>
+					{{recetum.total}}
+				</div>
+            </div>
+
+</section>
+    </div>
+	
+</div>
+
+
+<div class="card">
+	<div class="card-header">
+        Detalle
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-6 col-md-4 border p-3">
+                <small class="text-muted">Código Producto</small>
+                <input type="text" class="form-control iCodigo">
+            </div>
+            <div class="col-sm-6 col-md-4 loading">
+                
+            </div>
+        </div>
+        
+		<section>	
+        <div class='panel'>
+            {{ form_start(form) }}
+			<div class="row">
+                <div class="col-sm-6 col-md-4">
+					<small class="text-muted">Materia Prima</small>
+					{{form_row(form.producto,{'label':false,'attr':{'class':'form-control iProducto'}})}}
+				</div>
+                <div class="col-sm-6 col-md-1">
+					<small class="text-muted">Cantidad</small>
+					{{form_row(form.cantidad,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+                 <div class="col-sm-6 col-md-1">
+					<small class="text-muted">Total KG</small>
+					{{form_row(form.cantUnidad,{'label':false,'attr':{'class':'form-control iCantidad'}})}}
+				</div>
+                <div class="col-sm-6 col-md-2">
+					<small class="text-muted">Unidad</small>
+					{{form_row(form.unidad,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+            
+                <div class="col-sm-6 col-md-2">
+					<small class="text-muted">Producto Principal</small>
+					{{form_row(form.isPrincipal,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+                <div class="col-sm-6 col-md-2" style="vertical-align:bottom">
+					<button class="btn btn-primary">{{ button_label|default('Agregar') }}</button>
+				</div>
+            </div>
+            {{ form_end(form) }}
+            </div>
+            <table class="table">
+			<thead>
+				<tr>
+					<th>Código</th>
+					<th>Nombre</th>
+					<th>Unidades</th>
+					<th>Total KG</th>
+
+                    <th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% set total=0 %}
+			{%  for recetaDetalle in recetum.recetaDetalles  %}
+				
+				<tr>
+                    <th>{{recetaDetalle.producto.codigo}}</th>
+					<th>{{recetaDetalle.producto.nombre}}</th>
+					<th>{{recetaDetalle.cantidad}}</th>
+					<th>{{recetaDetalle.cantUnidad}}</th>
+					<th>{{recetaDetalle.unidad}}</th>
+					<th>
+					{{ include('receta/_deleteDetalle.html.twig',{'receta_detalle_id':recetaDetalle.id}) }}
+					</th>
+				</tr>
+				
+				
+			{% endfor %}
+
+			</tbody>
+			</tfoot>
+				<tr>
+					<th></th>
+					<th></th>
+					<th></th>
+					
+					<th></th>
+					<th>
+					
+					</th>
+				</tr>
+			</tfoot>
+			</table>
+        </section>
+    </div>
+    <div class="card-footer">
+
+		<div class="row">
+			<a href="{{path('receta_end',{'id':recetum.id})}}" class="btn btn-primary">Finalizar</a> <a href="{{path('receta_end',{'id':recetum.id,'next':'next'})}}" class="btn btn-success">Finalizar y Nuevo</a>
+		</div>	
+
+	</div>
+</div>    	
+
+<script>
+
+
+	$(".iProducto").prepend('<option > Seleccionar Producto </option>');
+	$('.iProducto option:first-child').attr("selected", "selected");
+	$(".iCodigo").focus();
+
+	$(".iCodigo").on('keypress',function(e) {
+
+
+		if(e.which == 13) {
+			 $.ajax({
+				url:"{{path('producto_codigo')}}",
+				type: "get",
+				data: "codigo="+$(".iCodigo").val(),
+				dataType: "html",
+				cache: false,
+				contentType: false,
+				processData: false,
+				async: true,
+				beforeSend: function(){
+                        $(".loading").html(' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>');
+                        
+                    },
+				success:function(data){ 
+					var obj = jQuery.parseJSON(data);
+					if(obj.status){
+						$.ajax({
+							url:"{{path('receta_panel',{'id':recetum.id})}}",
+							type: "get",
+							data: "producto="+obj.producto.id,
+							dataType: "html",
+							cache: false,
+							contentType: false,
+							processData: false,
+							async: true,
+							success:function(data){
+                                $(".loading").html(' ');
+								$(".panel").html(data);
+								$(".iCantidad").focus();
+
+							}
+
+						});
+					}else{
+                         $(".loading").html('<div class="alert alert-danger" role="alert">El codigo no existe! <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                    }
+				}
+			});
+		}
+	});
+</script>
+  
+{% endblock %}

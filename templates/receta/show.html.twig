@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Receta{% endblock %}
+
+{% block body %}
+    <h1>Receta</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ recetum.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ recetum.nombre }}</td>
+            </tr>
+            <tr>
+                <th>FechaIngreso</th>
+                <td>{{ recetum.fechaIngreso ? recetum.fechaIngreso|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Rendimiento</th>
+                <td>{{ recetum.rendimiento }}</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <td>{{ recetum.total }}</td>
+            </tr>
+            <tr>
+                <th>Estado</th>
+                <td>{{ recetum.estado ? 'Yes' : 'No' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('receta_index') }}">back to list</a>
+
+    <a href="{{ path('receta_edit', {'id': recetum.id}) }}">edit</a>
+
+    {{ include('receta/_delete_form.html.twig') }}
+{% endblock %}

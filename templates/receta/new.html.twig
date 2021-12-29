@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Receta{% endblock %}
+
+{% block body %}
+  
+{{ form_start(form) }}     	
+<div class="card">
+	<div class="card-body">
+
+		<section>	
+			
+			<div class="row">
+
+                <div class="col-sm-6 col-md-4">
+					<small class="text-muted">Nombre</small>
+					{{form_row(form.nombre,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+                <div class="col-sm-6 col-md-2">
+					<small class="text-muted">Rendicimiento</small>
+					{{form_row(form.rendimiento,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+                <div class="col-sm-6 col-md-2">
+					<small class="text-muted">Total</small>
+					{{form_row(form.total,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+            </div>
+
+</section>
+    </div>
+	<div class="card-footer">
+   
+        <button class="btn btn-primary">{{ button_label|default('Siguiente') }}</button>
+	</div>
+</div>
+{{ form_end(form) }}
+  
+{% endblock %}

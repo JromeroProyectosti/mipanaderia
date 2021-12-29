@@ -271,6 +271,11 @@ class Usuario implements UserInterface
      */
     private $movimientos;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Receta::class, mappedBy="usuarioIngreso")
+     */
+    private $recetas;
+
 
     
     public function __construct()
@@ -282,6 +287,7 @@ class Usuario implements UserInterface
         $this->usuarioContratos = new ArrayCollection();
         $this->usuarioNoDisponibles = new ArrayCollection();
         $this->movimientos = new ArrayCollection();
+        $this->recetas = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -1027,6 +1033,36 @@ class Usuario implements UserInterface
             // set the owning side to null (unless already changed)
             if ($movimiento->getUsuarioIngreso() === $this) {
                 $movimiento->setUsuarioIngreso(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Receta[]
+     */
+    public function getRecetas(): Collection
+    {
+        return $this->recetas;
+    }
+
+    public function addReceta(Receta $receta): self
+    {
+        if (!$this->recetas->contains($receta)) {
+            $this->recetas[] = $receta;
+            $receta->setUsuarioIngreso($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceta(Receta $receta): self
+    {
+        if ($this->recetas->removeElement($receta)) {
+            // set the owning side to null (unless already changed)
+            if ($receta->getUsuarioIngreso() === $this) {
+                $receta->setUsuarioIngreso(null);
             }
         }
 

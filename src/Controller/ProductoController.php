@@ -9,6 +9,7 @@ use App\Entity\ProductoUnidad;
 use App\Form\ProductoType;
 use App\Repository\ProductoRepository;
 use App\Repository\CuentaRepository;
+use App\Repository\ModuloPerRepository;
 use Doctrine\ORM\EntityRepository;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
@@ -27,11 +28,13 @@ class ProductoController extends AbstractController
     /**
      * @Route("/", name="producto_index", methods={"GET"})
      */
-    public function index(ProductoRepository $productoRepository, PaginatorInterface $paginator,Request $request, CuentaRepository $cuentaRepository): Response
+    public function index(ProductoRepository $productoRepository, PaginatorInterface $paginator,Request $request, CuentaRepository $cuentaRepository,ModuloPerRepository $moduloPerRepository): Response
     {
 
-        $user=$this->getUser();
+        $this->denyAccessUnlessGranted('view','producto');
         
+        $user=$this->getUser();
+        $pagina=$moduloPerRepository->findOneByName('producto',$user->getEmpresaActual());
         $empresa=$this->getDoctrine()->getRepository(Empresa::class)->find($user->getEmpresaActual());
 
         $modo=1;
@@ -53,15 +56,19 @@ class ProductoController extends AbstractController
             'productos' => $productos,
             'pagina'=>"Productos",
             'modo'=>$modo,
+            'pagina'=>$pagina->getNombre(),
         ]);
     }
 
     /**
      * @Route("/new", name="producto_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, ModuloPerRepository $moduloPerRepository): Response
     {
+        $this->denyAccessUnlessGranted('create','producto');
+        
         $user=$this->getUser();
+        $pagina=$moduloPerRepository->findOneByName('producto',$user->getEmpresaActual());
         
         $this->empresa=$this->getDoctrine()->getRepository(Empresa::class)->find($user->getEmpresaActual());
 
@@ -107,7 +114,7 @@ class ProductoController extends AbstractController
         return $this->render('producto/new.html.twig', [
             'producto' => $producto,
             'form' => $form->createView(),
-            'pagina'=>"Productos",
+            'pagina'=>$pagina->getNombre(),
         ]);
     }
 
@@ -116,7 +123,8 @@ class ProductoController extends AbstractController
      */
     public function codigo(Request $request): Response
     {
-        $user=$this->getUser();
+             $user=$this->getUser();
+ 
         
         $this->empresa=$this->getDoctrine()->getRepository(Empresa::class)->find($user->getEmpresaActual());
         
@@ -151,9 +159,12 @@ class ProductoController extends AbstractController
     /**
      * @Route("/{id}/edit", name="producto_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Producto $producto): Response
+    public function edit(Request $request, Producto $producto,ModuloPerRepository $moduloPerRepository): Response
     {
+        $this->denyAccessUnlessGranted('edit','producto');
+        
         $user=$this->getUser();
+        $pagina=$moduloPerRepository->findOneByName('producto',$user->getEmpresaActual());
         
         $this->empresa=$this->getDoctrine()->getRepository(Empresa::class)->find($user->getEmpresaActual());
 
@@ -199,6 +210,7 @@ class ProductoController extends AbstractController
         return $this->render('producto/edit.html.twig', [
             'producto' => $producto,
             'form' => $form->createView(),
+            'pagina'=>$pagina->getNombre(),
         ]);
     }
 

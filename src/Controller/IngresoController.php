@@ -14,6 +14,7 @@ use App\Repository\MovimientoRepository;
 use App\Form\MovimientoType;
 use App\Repository\CuentaRepository;
 use App\Repository\FolioRepository;
+use App\Repository\ModuloPerRepository;
 use Doctrine\ORM\EntityRepository;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
@@ -35,9 +36,13 @@ class IngresoController extends AbstractController
     public function index(Request $request, 
                         MovimientoRepository $movimientoRepository, 
                         PaginatorInterface $paginator, 
-                        CuentaRepository $cuentaRepository): Response
+                        CuentaRepository $cuentaRepository,
+                        ModuloPerRepository $moduloPerRepository): Response
     {
+        $this->denyAccessUnlessGranted('view','ingreso');
+        
         $user=$this->getUser();
+        $pagina=$moduloPerRepository->findOneByName('ingreso',$user->getEmpresaActual());
         
         $empresa=$this->getDoctrine()->getRepository(Empresa::class)->find($user->getEmpresaActual());
         $movimientoTipo=$this->getDoctrine()->getRepository(MovimientoTipo::class)->findBy(['empresa'=>$empresa->getId(),'nombre'=>'Ingreso','estado'=>true]);
@@ -94,7 +99,7 @@ class IngresoController extends AbstractController
 
 
         return $this->render('ingreso/index.html.twig', [
-            'pagina' => 'Ingreso',
+            'pagina' => $pagina->getNombre(),
             'movimientos'=>$movimientos,
             'modo'=>$modo,
             'cuentas'=>$cuentas,
@@ -108,10 +113,13 @@ class IngresoController extends AbstractController
     /**
      * @Route("/new", name="ingreso_new", methods={"GET","POST"})
      */
-    public function new(Request $request,FolioRepository $folioRepository): Response
+    public function new(Request $request,FolioRepository $folioRepository, ModuloPerRepository $moduloPerRepository): Response
     {
 
+        $this->denyAccessUnlessGranted('create','ingreso');
+        
         $user=$this->getUser();
+        $pagina=$moduloPerRepository->findOneByName('ingreso',$user->getEmpresaActual());
         
         $this->empresa=$this->getDoctrine()->getRepository(Empresa::class)->find($user->getEmpresaActual());
         $movimientoTipo=$this->getDoctrine()->getRepository(MovimientoTipo::class)->findBy(['empresa'=>$this->empresa->getId(),'nombre'=>'Ingreso','estado'=>true]);
@@ -142,7 +150,7 @@ class IngresoController extends AbstractController
         return $this->render('ingreso/new.html.twig', [
             'movimiento' => $movimiento,
             'form' => $form->createView(),
-            'pagina'=>"Ingreso",
+            'pagina'=> $pagina->getNombre(),
         ]);
 
 
@@ -162,9 +170,12 @@ class IngresoController extends AbstractController
     /**
      * @Route("/{id}/detail", name="ingreso_detail", methods={"GET","POST"})
      */
-    public function detail(Request $request, Movimiento $movimiento): Response
+    public function detail(Request $request, Movimiento $movimiento, ModuloPerRepository $moduloPerRepository): Response
     {
+        $this->denyAccessUnlessGranted('create','ingreso');
+        
         $user=$this->getUser();
+        $pagina=$moduloPerRepository->findOneByName('ingreso',$user->getEmpresaActual());
         
         $this->empresa=$this->getDoctrine()->getRepository(Empresa::class)->find($user->getEmpresaActual());
 
@@ -210,6 +221,7 @@ class IngresoController extends AbstractController
             'movimiento' => $movimiento,
             'movimiento_producto'=>$movimientoProducto,
             'form' => $form->createView(),
+            'pagina'=>$pagina->getNombre(),
         ]);
 
     }
@@ -342,6 +354,8 @@ class IngresoController extends AbstractController
      */
     public function delete(Request $request, Movimiento $movimiento): Response
     {
+        $this->denyAccessUnlessGranted('full','ingreso');
+      
         if ($this->isCsrfTokenValid('delete'.$movimiento->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $movimiento->setEstado(0);
