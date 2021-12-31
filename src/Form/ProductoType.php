@@ -16,7 +16,6 @@ class ProductoType extends AbstractType
             ->add('nombre')
             ->add('cantidadPaquete')
             ->add('stockMinimo')
-            ->add('productoTipo')
             ->add('productoUnidad')
         ;
     }

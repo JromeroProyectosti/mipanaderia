@@ -22,20 +22,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/producto")
+ * @Route("/materia_prima")
  */
-class ProductoController extends AbstractController
+class MateriaPrimaController extends AbstractController
 {
     /**
-     * @Route("/", name="producto_index", methods={"GET"})
+     * @Route("/", name="materia_prima_index", methods={"GET"})
      */
     public function index(ProductoRepository $productoRepository, PaginatorInterface $paginator,Request $request, CuentaRepository $cuentaRepository,ModuloPerRepository $moduloPerRepository): Response
     {
 
-        $this->denyAccessUnlessGranted('view','producto');
+        $this->denyAccessUnlessGranted('view','materia_prima');
         
         $user=$this->getUser();
-        $pagina=$moduloPerRepository->findOneByName('producto',$user->getEmpresaActual());
+        $pagina=$moduloPerRepository->findOneByName('materia_prima',$user->getEmpresaActual());
         $empresa=$this->getDoctrine()->getRepository(Empresa::class)->find($user->getEmpresaActual());
 
         $modo=1;
@@ -43,7 +43,7 @@ class ProductoController extends AbstractController
             $modo=0;
             
         }
-        $query=$productoRepository->findBy(['empresa'=>$empresa, 'estado'=>$modo,'productoTipo'=>2]);
+        $query=$productoRepository->findBy(['empresa'=>$empresa, 'estado'=>$modo,'productoTipo'=>1]);
         $companias=$cuentaRepository->findByPers($user->getId(),$user->getEmpresaActual());
 
         $productos=$paginator->paginate(
@@ -53,23 +53,26 @@ class ProductoController extends AbstractController
             array('defaultSortFieldName' => 'nombre', 'defaultSortDirection' => 'asc'));
 
 
-        return $this->render('producto/index.html.twig', [
+        return $this->render('materia_prima/index.html.twig', [
             'productos' => $productos,
-            'pagina'=>"Productos",
+            
             'modo'=>$modo,
             'pagina'=>$pagina->getNombre(),
         ]);
     }
 
     /**
-     * @Route("/new", name="producto_new", methods={"GET","POST"})
+     * @Route("/new", name="materia_prima_new", methods={"GET","POST"})
      */
-    public function new(Request $request, ModuloPerRepository $moduloPerRepository,ProductoTipoRepository $productoTipoRepository): Response
+    public function new(Request $request, 
+                        ModuloPerRepository $moduloPerRepository,
+                        ProductoRepository $productoRepository,
+                        ProductoTipoRepository $productoTipoRepository): Response
     {
-        $this->denyAccessUnlessGranted('create','producto');
+        $this->denyAccessUnlessGranted('create','materia_prima');
         
         $user=$this->getUser();
-        $pagina=$moduloPerRepository->findOneByName('producto',$user->getEmpresaActual());
+        $pagina=$moduloPerRepository->findOneByName('materia_prima',$user->getEmpresaActual());
         
         $this->empresa=$this->getDoctrine()->getRepository(Empresa::class)->find($user->getEmpresaActual());
 
@@ -78,8 +81,10 @@ class ProductoController extends AbstractController
         $producto->setEmpresa($this->empresa);
         $producto->setProductoTipo($productoTipoRepository->find(2));
         $form = $this->createForm(ProductoType::class, $producto);
-        $form->add('codigo',TextType::class);  
+        $form->add('codigo',TextType::class);
+        
         $form->add('productoUnidad', EntityType::class, [
+            
             'class' => ProductoUnidad::class,
             'query_builder' => function (EntityRepository $er) {
                 return $er->createQueryBuilder('p')
@@ -93,19 +98,20 @@ class ProductoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+ 
             if($productoRepository->existeCodigo($this->empresa->getId(),1,$producto->getCodigo())){
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($producto);
                 $entityManager->flush();
 
                 $toast="Registro creado con exito";
-                return $this->redirectToRoute('producto_new',['toast'=>$toast,'icon'=>'success']);
+                return $this->redirectToRoute('materia_prima_new',['toast'=>$toast,'icon'=>'success']);
             }else{
-                return $this->redirectToRoute('producto_new',['toast'=>'El codigo ya existe','icon'=>'error']);
+                return $this->redirectToRoute('materia_prima_new',['toast'=>'El codigo ya existe','icon'=>'error']);
             }
         }
 
-        return $this->render('producto/new.html.twig', [
+        return $this->render('materia_prima/new.html.twig', [
             'producto' => $producto,
             'form' => $form->createView(),
             'pagina'=>$pagina->getNombre(),
@@ -113,7 +119,7 @@ class ProductoController extends AbstractController
     }
 
     /**
-     * @Route("/codigo", name="producto_codigo", methods={"GET","POST"})
+     * @Route("/codigo", name="materia_prima_codigo", methods={"GET","POST"})
      */
     public function codigo(Request $request): Response
     {
@@ -123,7 +129,7 @@ class ProductoController extends AbstractController
         $this->empresa=$this->getDoctrine()->getRepository(Empresa::class)->find($user->getEmpresaActual());
         
         if($request->query->get('codigo')){
-            $producto=$this->getDoctrine()->getRepository(Producto::class)->findOneBy(['empresa'=>$this->empresa,'codigo'=>$request->query->get('codigo'),'productoTipo'=>2]);
+            $producto=$this->getDoctrine()->getRepository(Producto::class)->findOneBy(['empresa'=>$this->empresa,'codigo'=>$request->query->get('codigo'),'productoTipo'=>1]);
             if(null == $producto){
                 return $this->json(['status'=>false]);
 
@@ -145,20 +151,20 @@ class ProductoController extends AbstractController
      */
     public function show(Producto $producto): Response
     {
-        return $this->render('producto/show.html.twig', [
+        return $this->render('materia_prima/show.html.twig', [
             'producto' => $producto,
         ]);
     }
 
     /**
-     * @Route("/{id}/edit", name="producto_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="materia_prima_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Producto $producto,ModuloPerRepository $moduloPerRepository): Response
     {
-        $this->denyAccessUnlessGranted('edit','producto');
+        $this->denyAccessUnlessGranted('edit','materia_prima');
         
         $user=$this->getUser();
-        $pagina=$moduloPerRepository->findOneByName('producto',$user->getEmpresaActual());
+        $pagina=$moduloPerRepository->findOneByName('materia_prima',$user->getEmpresaActual());
         
         $this->empresa=$this->getDoctrine()->getRepository(Empresa::class)->find($user->getEmpresaActual());
 
@@ -170,7 +176,6 @@ class ProductoController extends AbstractController
                 
             ]
             );
-       
         $form->add('productoUnidad', EntityType::class, [
             
             'class' => ProductoUnidad::class,
@@ -210,6 +215,6 @@ class ProductoController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('producto_index',['toast'=>'Producto eliminado correctamente','icon'=>'warning']);
+        return $this->redirectToRoute('materia_prima_index',['toast'=>'Producto eliminado correctamente','icon'=>'warning']);
     }
 }

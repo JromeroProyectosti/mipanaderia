@@ -195,7 +195,42 @@ class RecetaController extends AbstractController
             'receta_detalle'=>$recetaDetalle,
             'form' => $form->createView(),
             'pagina'=> $pagina->getNombre(),
+            'productos_terminados'=> $this->getDoctrine()->getRepository(Producto::class)->findBy(['empresa'=>$this->empresa->getId(),'productoTipo'=>2])
         ]);
+    }
+
+    /**
+     * @Route("/{id}/asociar", name="receta_asociar", methods={"GET","POST"})
+     */
+    public function asociar(Request $request, Receta $recetum, ModuloPerRepository $moduloPerRepository): Response
+    {
+        $this->denyAccessUnlessGranted('create','receta');
+        
+        $user=$this->getUser();
+        $pagina=$moduloPerRepository->findOneByName('receta',$user->getEmpresaActual());
+
+        $this->empresa=$this->getDoctrine()->getRepository(Empresa::class)->find($user->getEmpresaActual());
+
+       
+
+        if ($request->request->get('cboProducto')) {
+            try{
+                $entityManager = $this->getDoctrine()->getManager();    
+            $producto=$this->getDoctrine()->getRepository(Producto::class)->find($request->request->get('cboProducto'));
+            $producto->setReceta($recetum);
+            $entityManager->persist($producto);
+            $entityManager->flush();
+            return $this->redirectToRoute('receta_detail',['id'=>$recetum->getId(),'toast'=>'Item creado con exito','icon'=>'success']);
+  
+            }catch(Exception $e){
+                return $this->redirectToRoute('receta_detail',['id'=>$recetum->getId(),'toast'=>$e->getMessage(),'icon'=>'error']);
+  
+            }
+            
+           
+        }
+
+        return $this->redirectToRoute('receta_detail',['id'=>$recetum->getId(),'toast'=>"Error",'icon'=>'error']);
     }
     /**
      * @Route("/{id}/delete_detalle", name="ingreso_deletedetalle", methods={"DELETE"})

@@ -326,6 +326,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         "cancelLabel": "Cancel",
                     }
                 });
+                $("input[data-bootstrap-switch]").each(function(){
+                  $(this).bootstrapSwitch('state', $(this).prop('checked'));
+                });
+
               
             </script>
         {% endblock %}

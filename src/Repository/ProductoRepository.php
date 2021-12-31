@@ -19,6 +19,35 @@ class ProductoRepository extends ServiceEntityRepository
         parent::__construct($registry, Producto::class);
     }
 
+    /**
+     * Busqueda de producto, si el codigo existe retorna false, si el codigo no existe retornara true
+     * @param int $empresa
+     * @param int $productoTipo (1: Materia Prima, 2: Producto Terminado)
+     * @param string $codigo
+     * @return bool
+     */
+    public function existeCodigo(int $empresa,int $productoTipo,String $codigo): bool
+    {
+
+
+        $query = $this->createQueryBuilder('p')
+            ->andWhere('p.empresa = :empresa')
+            ->andWhere('p.productoTipo= :tipo')
+            ->andWhere('p.codigo= :codigo')
+            ->andWhere('p.estado=1')
+            ->setParameter('empresa', $empresa)
+            ->setParameter('tipo', $productoTipo)
+            ->setParameter('codigo', $codigo)
+            ->orderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+        if($query==null){
+            return true;
+        }else{
+            return false;
+        }
+    }
     // /**
     //  * @return Producto[] Returns an array of Producto objects
     //  */

@@ -1,0 +1,42 @@
+{{ form_start(form) }}
+
+       	
+<div class="card">
+	<div class="card-body">
+
+		<section>	
+			
+			<div class="row">
+				<div class="col-sm-6 col-md-4">
+					<small class="text-muted">Código *</small>
+					{{form_row(form.codigo,{'label':false,'attr':{'class':'form-control pCodigo'}})}}
+				</div>
+				<div class="col-sm-6 col-md-8">
+					<small class="text-muted">Nombre *</small>
+					{{form_row(form.nombre,{'label':false,'attr':{'class':'form-control pNombre'}})}}
+				</div>
+				<div class="col-sm-6 col-md-2">
+					<small class="text-muted">Cantidad del Paquete *</small>
+					{{form_row(form.cantidadPaquete,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+				
+				<div class="col-sm-6 col-md-2">
+					<small class="text-muted">Stock Minimo *</small>
+					{{form_row(form.stockMinimo,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+			
+				<div class="col-sm-6 col-md-3">
+					<small class="text-muted">Unidad *</small>
+					{{form_row(form.productoUnidad,{'label':false,'attr':{'class':'form-control'}})}}
+				</div>
+	
+			</div>
+		</section>
+    </div>
+	<div class="card-footer">
+   
+        <button class="btn btn-primary">{{ button_label|default('Guardar') }}</button>
+	</div>
+</div>
+
+{{ form_end(form) }}
