@@ -32,6 +32,11 @@ class Folio
      */
     private $egreso;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $pedido;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -69,6 +74,18 @@ class Folio
     public function setEgreso(int $egreso): self
     {
         $this->egreso = $egreso;
+
+        return $this;
+    }
+
+    public function getPedido(): ?int
+    {
+        return $this->pedido;
+    }
+
+    public function setPedido(?int $pedido): self
+    {
+        $this->pedido = $pedido;
 
         return $this;
     }

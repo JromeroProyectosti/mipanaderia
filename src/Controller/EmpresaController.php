@@ -5,11 +5,15 @@ namespace App\Controller;
 use App\Entity\Empresa;
 use App\Entity\Cuenta;
 use App\Entity\Accion;
+use App\Entity\Folio;
 use App\Entity\MenuCabezera;
 use App\Entity\Menu;
 use App\Entity\Privilegio;
 use App\Entity\PrivilegioTipousuario;
 use App\Entity\ModuloPer;
+use App\Entity\Movimiento;
+use App\Entity\PedidoEstado;
+use App\Entity\PedidoMedida;
 use App\Entity\UsuarioTipo;
 use App\Entity\UsuarioCuenta;
 use App\Entity\UsuarioCategoria;
@@ -168,6 +172,48 @@ class EmpresaController extends AbstractController
             $entityManager->persist($cuenta);
             $entityManager->flush();
 
+            $pedidoMedida=new PedidoMedida();
+            $pedidoMedida->setEmpresa($empresa);
+            $pedidoMedida->setNombre('kg');
+            $pedidoMedida->setNombreMedida('KiloGramos');
+            $pedidoMedida->setCod('kg');
+            $pedidoMedida->setEstado(true);
+            $pedidoMedida->setOrden(0);
+
+            $entityManager->persist($pedidoMedida);
+            $entityManager->flush();
+
+            $pedidoMedida=new PedidoMedida();
+            $pedidoMedida->setEmpresa($empresa);
+            $pedidoMedida->setNombre('calc');
+            $pedidoMedida->setNombreMedida('Peso en Lata');
+            $pedidoMedida->setCod('pl');
+            $pedidoMedida->setEstado(true);
+            $pedidoMedida->setOrden(1);
+
+            $entityManager->persist($pedidoMedida);
+            $entityManager->flush();
+
+            $pedidoEstado=new PedidoEstado();
+            $pedidoEstado->setEmpresa($empresa);
+            $pedidoEstado->setNombre('expect');
+            $pedidoEstado->setNombreEstado('Esperar');
+            $pedidoEstado->setEstado(true);
+            $pedidoEstado->setOrden(0);
+            $entityManager->persist($pedidoEstado);
+            $entityManager->flush();
+
+            $pedidoEstado=new PedidoEstado();
+            $pedidoEstado->setEmpresa($empresa);
+            $pedidoEstado->setNombre('requested');
+            $pedidoEstado->setNombreEstado('Solicitado');
+            $pedidoEstado->setEstado(true);
+            $pedidoEstado->setOrden(1);
+            $entityManager->persist($pedidoEstado);
+            $entityManager->flush();
+
+
+
             $usuarioCategoria=new UsuarioCategoria();
             $usuarioCategoria->setEmpresa($empresa);
             $usuarioCategoria->setNombre('Nivel 1');
@@ -196,6 +242,14 @@ class EmpresaController extends AbstractController
             $usuarioTipo->setEmpresa($empresa);
 
             $entityManager->persist($usuarioTipo);
+            $entityManager->flush();
+
+            $folio=new Folio();
+            $folio->setEmpresa($empresa);
+            $folio->setIngreso(0);
+            $folio->setEgreso(0);
+            $folio->setPedido(0);
+            $entityManager->persist($folio);
             $entityManager->flush();
 
             // $usuarioTipo=new UsuarioTipo();

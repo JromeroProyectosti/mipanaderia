@@ -1,0 +1,28 @@
+{% block body %}
+{{ form_start(form) }}
+					<div class="row">
+						<div class="col-sm-12 col-md-8">
+							<div class="row">
+								<div class="col-sm-12 col-md-6">
+									<small class="text-muted">Producto</small>
+									{{form_row(form.producto,{'label':false,'attr':{'class':'form-control iProducto'}})}}
+								</div>
+                                <div class="col-sm-6 col-md-4">
+									<small class="text-muted">Medida</small>
+									{{form_row(form.pedidoMedida,{'label':false,'attr':{'class':'form-control'}})}}
+								</div>
+								<div class="col-sm-6 col-md-2">
+									<small class="text-muted">Cantidad</small>
+									{{form_row(form.cantidad,{'label':false,'attr':{'class':'form-control iCantidad'}})}}
+								</div>
+							
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-4 p-4">
+								<button class="btn btn-primary">{{ button_label|default('Agregar') }}</button>
+						</div>
+					</div>
+					{{ form_end(form) }}
+
+
+{% endblock %}

@@ -72,9 +72,20 @@ class Producto
      */
     private $receta;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $pesoLata;
+
+    /**
+     * @ORM\OneToMany(targetEntity=PedidoDetalle::class, mappedBy="producto", orphanRemoval=true)
+     */
+    private $pedidoDetalles;
+
     public function __construct()
     {
         $this->movimientoProductos = new ArrayCollection();
+        $this->pedidoDetalles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -220,6 +231,48 @@ class Producto
     public function setReceta(?Receta $receta): self
     {
         $this->receta = $receta;
+
+        return $this;
+    }
+
+    public function getPesoLata(): ?int
+    {
+        return $this->pesoLata;
+    }
+
+    public function setPesoLata(?int $pesoLata): self
+    {
+        $this->pesoLata = $pesoLata;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PedidoDetalle[]
+     */
+    public function getPedidoDetalles(): Collection
+    {
+        return $this->pedidoDetalles;
+    }
+
+    public function addPedidoDetalle(PedidoDetalle $pedidoDetalle): self
+    {
+        if (!$this->pedidoDetalles->contains($pedidoDetalle)) {
+            $this->pedidoDetalles[] = $pedidoDetalle;
+            $pedidoDetalle->setProducto($this);
+        }
+
+        return $this;
+    }
+
+    public function removePedidoDetalle(PedidoDetalle $pedidoDetalle): self
+    {
+        if ($this->pedidoDetalles->removeElement($pedidoDetalle)) {
+            // set the owning side to null (unless already changed)
+            if ($pedidoDetalle->getProducto() === $this) {
+                $pedidoDetalle->setProducto(null);
+            }
+        }
 
         return $this;
     }

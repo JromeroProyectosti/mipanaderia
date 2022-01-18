@@ -171,9 +171,10 @@ class RecetaController extends AbstractController
             'query_builder' => function (EntityRepository $er) {
                 
                 return $er->createQueryBuilder('p')
-                    ->where('p.empresa = '.$this->empresa->getId())
-                    ->where("p.productoTipo = 1")
-                    ->where("p.estado = true")
+                    ->join("p.productoTipo","pt")
+                    ->andWhere('p.empresa = '.$this->empresa->getId())
+                    ->andWhere("pt.id = 1")
+                    ->andWhere("p.estado = true")
                     ->orderBy('p.nombre', 'ASC');
             },
             'choice_label' => 'nombre',

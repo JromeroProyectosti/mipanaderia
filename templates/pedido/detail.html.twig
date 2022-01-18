@@ -17,17 +17,10 @@
 			<div class="row">
 
                 <div class="col-sm-6 col-md-4">
-					<small class="text-muted">Nombre</small>
-					{{recetum.nombre}}
+					<small class="text-muted">Cliente</small>
+					{{pedido.cliente}}
 				</div>
-                <div class="col-sm-6 col-md-2">
-					<small class="text-muted">Rendimiento</small>
-					{{recetum.rendimiento}}
-				</div>
-                <div class="col-sm-6 col-md-2">
-					<small class="text-muted">Total</small>
-					{{recetum.total}}
-				</div>
+                
             </div>
 
 </section>
@@ -59,31 +52,22 @@
 					<div class="row">
 						<div class="col-sm-12 col-md-8">
 							<div class="row">
-								<div class="col-sm-12 col-md-12">
-									<small class="text-muted">Materia Prima</small>
+								<div class="col-sm-12 col-md-6">
+									<small class="text-muted">Producto</small>
 									{{form_row(form.producto,{'label':false,'attr':{'class':'form-control iProducto'}})}}
+								</div>
+                                <div class="col-sm-6 col-md-4">
+									<small class="text-muted">Medida</small>
+									{{form_row(form.pedidoMedida,{'label':false,'attr':{'class':'form-control'}})}}
 								</div>
 								<div class="col-sm-6 col-md-2">
 									<small class="text-muted">Cantidad</small>
-									{{form_row(form.cantidad,{'label':false,'attr':{'class':'form-control'}})}}
-								</div>
-								<div class="col-sm-6 col-md-2">
-									<small class="text-muted">Total KG</small>
-									{{form_row(form.cantUnidad,{'label':false,'attr':{'class':'form-control iCantidad'}})}}
-								</div>
-								<div class="col-sm-6 col-md-2">
-									<small class="text-muted">Unidad</small>
-									{{form_row(form.unidad,{'label':false,'attr':{'class':'form-control'}})}}
-								</div>
-							
-								<div class="col-sm-6 col-md-4">
-									<small class="text-muted">Producto Principal</small>
-									{{form_row(form.isPrincipal,{'label':false,attr:{'data-bootstrap-switch':''}})}}
+									{{form_row(form.cantidad,{'label':false,'attr':{'class':'form-control iCantidad'}})}}
 								</div>
 							
 							</div>
 						</div>
-						<div class="col-sm-6 col-md-4 p-5">
+						<div class="col-sm-6 col-md-4 p-4">
 								<button class="btn btn-primary">{{ button_label|default('Agregar') }}</button>
 						</div>
 					</div>
@@ -95,24 +79,22 @@
 								<tr>
 									<th>Código</th>
 									<th>Nombre</th>
-									<th>Unidades</th>
-									<th>Total KG</th>
-
+									<th>Medida</th>
+									<th>Cantidad</th>
 									<th>Acciones</th>
 								</tr>
 							</thead>
 							<tbody>
 							{% set total=0 %}
-							{%  for recetaDetalle in recetum.recetaDetalles  %}
+							{%  for pedidoDetalle in pedido.pedidoDetalles  %}
 								
 								<tr>
-									<td>{{recetaDetalle.producto.codigo}}</td>
-									<td>{{recetaDetalle.producto.nombre}}</td>
-									<td>{{recetaDetalle.cantidad}}</td>
-									<td>{{recetaDetalle.cantUnidad}}</td>
-									<td>{{recetaDetalle.unidad}}</td>
+									<td>{{pedidoDetalle.producto.codigo}}</td>
+									<td>{{pedidoDetalle.producto.nombre}}</td>
+									<td>{{pedidoDetalle.pedidoMedida}}</td>
+									<td>{{pedidoDetalle.cantidad}}</td>
 									<td>
-									{{ include('receta/_deleteDetalle.html.twig',{'receta_detalle_id':recetaDetalle.id}) }}
+									{{ include('pedido/_deleteDetalle.html.twig',{'pedido_detalle_id':pedidoDetalle.id}) }}
 									</td>
 								</tr>
 								
@@ -139,48 +121,13 @@
 			
 		</div>    	
 	</div>
-	<div class="col-sm-12 col-md-4">
-		<div class="card">
-			<div class="card-header">
-				Productos Relacionados
-			</div>
-
-			<div class="card-body">
-			<form action="{{path('receta_asociar',{'id':recetum.id})}}" method="post">
-				<div class="row">
-				
-
-					<div class="col-sm-6 col-md-8 ">
-						<small class="text-muted">Asociar producto terminado</small>
-						<select name="cboProducto" class="form-control" required>
-							<option value=''> seleccione producto </option>
-							{% for  producto in productos_terminados %}
-							<option value="{{ producto.id }}">{{producto.nombre}}</option>
-							{% endfor %}
-
-						</select>
-					</div>
-					<div class="col-sm-6 col-md-4  p-3">
-						<button  class="btn btn-primary">Agregar</button>
-					</div>
-					<div class="col-12">
-						{% for producto in recetum.productos %}
-
-						<div>{{ producto.nombre }}</div>
-						{% endfor %}
-					</div>
-				</div>
-				</form>
-			</div>
-		</div>
-
-	</div>
+	
 	<div class="col-12">
 		<div class="card">
 			<div class="card-footer " style="v-align:center !important">
 
 				<div class="row">
-					<a href="{{path('receta_end',{'id':recetum.id})}}" class="btn btn-primary">Finalizar</a> <a href="{{path('receta_end',{'id':recetum.id,'next':'next'})}}" class="btn btn-success">Finalizar y Nuevo</a>
+					<a href="{{path('pedido_end',{'id':pedido.id})}}" class="btn btn-primary">Finalizar</a> <a href="{{path('pedido_end',{'id':pedido.id,'next':'next'})}}" class="btn btn-success">Finalizar y Nuevo</a>
 				</div>	
 
 			</div>
@@ -215,7 +162,7 @@
 					var obj = jQuery.parseJSON(data);
 					if(obj.status){
 						$.ajax({
-							url:"{{path('receta_panel',{'id':recetum.id})}}",
+							url:"{{path('pedido_panel',{'id':pedido.id})}}",
 							type: "get",
 							data: "producto="+obj.producto.id,
 							dataType: "html",

@@ -60,6 +60,11 @@ class Cuenta
      */
     private $movimientos;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Solicitud::class, mappedBy="Cuenta")
+     */
+    private $solicitudes;
+
     
   
 
@@ -69,6 +74,7 @@ class Cuenta
         $this->sucursals = new ArrayCollection();
         $this->usuarioUsuariocategorias = new ArrayCollection();
         $this->movimientos = new ArrayCollection();
+        $this->solicitudes = new ArrayCollection();
 
     }
 
@@ -246,6 +252,36 @@ class Cuenta
             // set the owning side to null (unless already changed)
             if ($movimiento->getCuenta() === $this) {
                 $movimiento->setCuenta(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Solicitud[]
+     */
+    public function getSolicitudes(): Collection
+    {
+        return $this->solicitudes;
+    }
+
+    public function addSolicitude(Solicitud $solicitude): self
+    {
+        if (!$this->solicitudes->contains($solicitude)) {
+            $this->solicitudes[] = $solicitude;
+            $solicitude->setCuenta($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSolicitude(Solicitud $solicitude): self
+    {
+        if ($this->solicitudes->removeElement($solicitude)) {
+            // set the owning side to null (unless already changed)
+            if ($solicitude->getCuenta() === $this) {
+                $solicitude->setCuenta(null);
             }
         }
 
